@@ -1,6 +1,6 @@
 > Any-Proxy可以帮助你匿名反向代理浏览任何网站  
   
-需配置伪静态，nginx伪静态规则如下：
+需配置伪静态，nginx伪静态规则如下：  
 if ( !-e $request_filename) {  
     rewrite ^/(.*)$ /index.php?$1 last;  
     break;  
