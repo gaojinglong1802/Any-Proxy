@@ -1,30 +1,30 @@
 <?php
-if (strstr($_SERVER["REQUEST_URI"], "*q") !== false) {
+if (strstr($_SERVER['REQUEST_URI'], "*q") !== false) {
     foreach ($_COOKIE as $key => $value) {
         setcookie($key, null);
     }
     header("Location: https://" . $_SERVER['HTTP_HOST']);
     exit;
 }
-if (substr($_SERVER["REQUEST_URI"], 1, 4) == "http" || $_POST['urlss']) {
+if (substr($_SERVER['REQUEST_URI'], 1, 4) == "http" || $_POST['urlss']) {
     if ($_POST['urlss']) {
         $url = $_POST['urlss'];
     } else {
-        $url = substr($_SERVER["REQUEST_URI"], 1);
+        $url = substr($_SERVER['REQUEST_URI'], 1);
     }
     if (strstr($url, "http") === false) {
         $url = "http://" . $url;
     }
-    $pageURL = parse_url($url);
-    $pageURL["query"] ? $query = "?" . $pageURL["query"] : $query = "";
-    $http = $pageURL['scheme'] . "://";
-    $pageURLs = $http . $_SERVER['HTTP_HOST'];
-    $pageURLs = $pageURLs . $pageURL["path"] . $query;
+    $PageUrl = parse_url($url);
+    $PageUrl['query'] ? $query = "?" . $PageUrl['query'] : $query = "";
+    $http = $PageUrl['scheme'] . "://";
+    $PageUrls = $http . $_SERVER['HTTP_HOST'];
+    $PageUrls = $PageUrls . $PageUrl['path'] . $query;
     foreach ($_COOKIE as $key => $value) {
         setcookie($key, null);
     }
-    setcookie("urlss", $http . $pageURL["host"], "0", "/");
-    header("Location: " . $pageURLs);
+    setcookie("urlss", $http . $PageUrl['host'], "0", "/");
+    header("Location: " . $PageUrls);
     exit;
 }
 if (!$_COOKIE['urlss']) {
@@ -50,7 +50,7 @@ $root = "." . $rootdomain[$lenth - 2];
 $aAccess = curl_init();
 // --------------------
 // set URL and other appropriate options
-curl_setopt($aAccess, CURLOPT_URL, $protocal_host['scheme'] . "://" . $protocal_host['host'] . $_SERVER["REQUEST_URI"]);
+curl_setopt($aAccess, CURLOPT_URL, $protocal_host['scheme'] . "://" . $protocal_host['host'] . $_SERVER['REQUEST_URI']);
 curl_setopt($aAccess, CURLOPT_HEADER, true);
 curl_setopt($aAccess, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, true);
@@ -73,8 +73,8 @@ function array_to_str($array) {
     }
     return urldecode($string);
 }
-if ($_SERVER["HTTP_REFERER"]) {
-    $referer = str_replace("http://" . $_SERVER['HTTP_HOST'], $protocal_host['scheme'] . "://" . $protocal_host['host'], $_SERVER["HTTP_REFERER"]);
+if ($_SERVER['HTTP_REFERER']) {
+    $referer = str_replace("https://" . $_SERVER['HTTP_HOST'], $protocal_host['scheme'] . "://" . $protocal_host['host'], $_SERVER['HTTP_REFERER']);
 }
 if (empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $remoteip = $_SERVER['REMOTE_ADDR'];
