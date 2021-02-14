@@ -20,6 +20,9 @@ if (substr($_SERVER["REQUEST_URI"], 1, 4) == "http" || $_POST['urlss']) {
     $http = $pageURL['scheme'] . "://";
     $pageURLs = $http . $_SERVER['HTTP_HOST'];
     $pageURLs = $pageURLs . $pageURL["path"] . $query;
+    foreach ($_COOKIE as $key => $value) {
+        setcookie($key, null);
+    }
     setcookie("urlss", $http . $pageURL["host"], "0", "/");
     header("Location: " . $pageURLs);
     exit;
