@@ -10,7 +10,7 @@ if ( !-e $request_filename) {
 需配置好https再使用  
 建立好后你可以直接在当前链接后面输入 *q 退出当前页面返回首页  
 
-也可以直接 http://你的域名/http://加需访问链接  
+也可以直接 http://xxx.com/http://需访问的链接 （必须添加http(s)://）  
   
 如 ：http://xxx.com/http://www.ip38.com/  
   
