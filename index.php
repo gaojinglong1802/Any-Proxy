@@ -1,6 +1,8 @@
 <?php
 if (strstr($_SERVER["REQUEST_URI"], "*q") !== false) {
-    setcookie("urlss", "", "0", "/");
+    foreach ($_COOKIE as $key => $value) {
+        setcookie($key, null);
+    }
     header("Location: https://" . $_SERVER['HTTP_HOST']);
     exit;
 }
