@@ -8,7 +8,7 @@ if ( !-e $request_filename) {
   
 支持POST、cookie  
 需配置好https再使用  
-![Image](https://p.pstatp.com/origin/1386c00047b0dffbf5283)
+![Image](https://p.pstatp.com/origin/1386c00047b0dffbf5283)  
 建立好后你可以直接在当前链接后面输入 *q 退出当前页面返回首页  
 
 也可以直接 http://xxx.com/http://需访问的链接 （必须添加http(s)://）  
