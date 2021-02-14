@@ -2,8 +2,8 @@
   
 需配置伪静态，nginx伪静态规则如下：
 if ( !-e $request_filename) {  
-       rewrite ^/(.*)$ /index.php?$1 last;  
-       break;  
+    rewrite ^/(.*)$ /index.php?$1 last;  
+    break;  
 }  
   
 支持POST、cookie  
