@@ -10,6 +10,9 @@ if (substr($_SERVER["REQUEST_URI"], 1, 4) == "http" || $_POST['urlss']) {
     } else {
         $url = substr($_SERVER["REQUEST_URI"], 1);
     }
+    if (strstr($url, "http") === false) {
+        $url = "http://" . $url;
+    }
     $pageURL = parse_url($url);
     $pageURL["query"] ? $query = "?" . $pageURL["query"] : $query = "";
     $http = $pageURL['scheme'] . "://";
