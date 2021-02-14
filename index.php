@@ -32,6 +32,8 @@ $target_host = $_COOKIE['urlss'];
 if (strstr($target_host, "http") === false) {
     $target_host = "http://" . $target_host;
 }
+//解决中文乱码
+#header("Content-Type:text/html;charset=gb2312");
 //处理代理的主机得到协议和主机名称
 $protocal_host = parse_url($target_host);
 //以.分割域名字符串
