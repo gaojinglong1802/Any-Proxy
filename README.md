@@ -6,6 +6,7 @@ if ( !-e $request_filename) {
        break;
 }
 
+支持POST、cookie
 需配置好https再使用
 建立好后你可以直接在当前链接后面输入 *q 退出当前页面返回首页
 
