@@ -13,7 +13,7 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     } else {
         $url = substr($path, 1);
     }
-    if (strstr($url, "http") === false) {
+    if (substr($url, 0, 4) != "http") {
         $url = "http://" . $url;
     }
     $PageUrl = parse_url($url);
