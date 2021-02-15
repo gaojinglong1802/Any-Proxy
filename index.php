@@ -1,9 +1,10 @@
 <?php
+$http_host = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
 if (strstr($_SERVER['REQUEST_URI'], "*q") !== false) {
     foreach ($_COOKIE as $key => $value) {
         setcookie($key, null);
     }
-    header("Location: https://" . $_SERVER['HTTP_HOST']);
+    header("Location: " . $http_host . $_SERVER['HTTP_HOST']);
     exit;
 }
 if (substr($_SERVER['REQUEST_URI'], 1, 4) == "http" || $_POST['urlss']) {
@@ -18,8 +19,7 @@ if (substr($_SERVER['REQUEST_URI'], 1, 4) == "http" || $_POST['urlss']) {
     $PageUrl = parse_url($url);
     $PageUrl['query'] ? $query = "?" . $PageUrl['query'] : $query = "";
     $http = $PageUrl['scheme'] . "://";
-    $PageUrls = $http . $_SERVER['HTTP_HOST'];
-    $PageUrls = $PageUrls . $PageUrl['path'] . $query;
+    $PageUrls = $http_host . $_SERVER['HTTP_HOST'] . $PageUrl['path'] . $query;
     foreach ($_COOKIE as $key => $value) {
         setcookie($key, null);
     }
@@ -36,7 +36,7 @@ if (strstr($target_host, "http") === false) {
     $target_host = "http://" . $target_host;
 }
 //解决中文乱码
-#header("Content-Type:text/html;charset=gb2312");
+#header("Content-Type:text/html;charset=GBK");
 //处理代理的主机得到协议和主机名称
 $protocal_host = parse_url($target_host);
 //以.分割域名字符串
@@ -74,7 +74,7 @@ function array_to_str($array) {
     return urldecode($string);
 }
 if ($_SERVER['HTTP_REFERER']) {
-    $referer = str_replace("https://" . $_SERVER['HTTP_HOST'], $protocal_host['scheme'] . "://" . $protocal_host['host'], $_SERVER['HTTP_REFERER']);
+    $referer = str_replace($http_host . $_SERVER['HTTP_HOST'], $protocal_host['scheme'] . "://" . $protocal_host['host'], $_SERVER['HTTP_REFERER']);
 }
 if (empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $remoteip = $_SERVER['REMOTE_ADDR'];
@@ -139,8 +139,7 @@ function parse_header($sResponse) {
     return $ret;
 }
 // close cURL resource, and free up system resources
-$sResponse = str_replace("http://" . $protocal_host['host']."/", "https://" . $_SERVER['HTTP_HOST']."/", $sResponse);
-$sResponse = str_replace("https://" . $protocal_host['host']."/", "https://" . $_SERVER['HTTP_HOST']."/", $sResponse);
+$sResponse = str_replace("http://" . $protocal_host['host']."/", $http_host . $_SERVER['HTTP_HOST']."/", $sResponse);
+$sResponse = str_replace("https://" . $protocal_host['host']."/", $http_host . $_SERVER['HTTP_HOST']."/", $sResponse);
 curl_close($aAccess);
 echo $sResponse;
-?>
