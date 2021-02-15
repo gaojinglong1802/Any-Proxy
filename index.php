@@ -23,7 +23,7 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     $PageUrls = $https . $host . $PageUrl['path'] . $query;
     del_cookie();
     if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP)) {
-        if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+        if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false) {
             loc_host();
         }
     }
@@ -52,7 +52,7 @@ if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
     loc_host();
 }
 if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP)) {
-    if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+    if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false) {
         del_cookie();
         loc_host();
     }
