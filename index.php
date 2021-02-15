@@ -1,9 +1,9 @@
 <?php
-//$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP
-$anyip = 1;
 $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
 $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+//$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP，仅在部分网站中有效
+$anyip = 1;
 if (substr($path, -2) == "*q") {
     del_cookie();
     header("Location: " . $https . $host);
