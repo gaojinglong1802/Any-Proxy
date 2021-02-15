@@ -1,10 +1,10 @@
 <?php
 $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
-$http_host = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+$https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
 if (substr($path, -2) == "*q") {
     del_cookie();
-    header("Location: " . $http_host . $host);
+    header("Location: " . $https . $host);
     exit;
 }
 if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_POST['urlss']) {
@@ -19,8 +19,12 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     $PageUrl = parse_url($url);
     $PageUrl['query'] ? $query = "?" . $PageUrl['query'] : $query = "";
     $http = $PageUrl['scheme'] . "://";
-    $PageUrls = $http_host . $host . $PageUrl['path'] . $query;
+    $PageUrls = $https . $host . $PageUrl['path'] . $query;
     del_cookie();
+    if (empty($PageUrl['host'])) {
+        header("Location: " . $https . $host);
+        exit;
+    }
     setcookie("urlss", $http . $PageUrl['host'], "0", "/");
     header("Location: " . $PageUrls);
     exit;
@@ -62,7 +66,7 @@ function array_to_str($array) {
     return urldecode($string);
 }
 if ($_SERVER['HTTP_REFERER']) {
-    $referer = str_replace($http_host . $host, $protocal_host['scheme'] . "://" . $protocal_host['host'], $_SERVER['HTTP_REFERER']);
+    $referer = str_replace($host, $protocal_host['host'], $_SERVER['HTTP_REFERER']);
 }
 if (empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $remoteip = $_SERVER['REMOTE_ADDR'];
@@ -89,11 +93,11 @@ list($headerstr, $sResponse) = parse_header($sResponse);
 $headarr = explode("\r\n", $headerstr);
 foreach ($headarr as $h) {
     if (strlen($h) > 0) {
+        if (strpos($h, 'Vary') !== false) continue;
+        if (strpos($h, 'Connection') !== false) continue;
         if (strpos($h, 'Content-Length') !== false) continue;
         if (strpos($h, 'Transfer-Encoding') !== false) continue;
-        if (strpos($h, 'Connection') !== false) continue;
         if (strpos($h, 'HTTP/1.1 100 Continue') !== false) continue;
-        if (strpos($h, 'Vary') !== false) continue;
         if (strpos($h, 'Set-Cookie') !== false) {
             $targetcookie = $h . ";";
             $res_cookie = preg_replace("/domain=.*?;/", "domain=" . $host .";", $targetcookie);
@@ -135,7 +139,7 @@ function parse_header($sResponse) {
     return $ret;
 }
 // close cURL resource, and free up system resources
-$sResponse = str_replace("http://" . $protocal_host['host']."/", $http_host . $host."/", $sResponse);
-$sResponse = str_replace("https://" . $protocal_host['host']."/", $http_host . $host."/", $sResponse);
+$sResponse = str_replace("http://" . $protocal_host['host']."/", $https . $host."/", $sResponse);
+$sResponse = str_replace("https://" . $protocal_host['host']."/", $https . $host."/", $sResponse);
 curl_close($aAccess);
 echo $sResponse;
