@@ -23,6 +23,12 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     $http = $PageUrl['scheme'] . "://";
     $PageUrls = $https . $host . $PageUrl['path'] . $query;
     del_cookie();
+    if(filter_var($ip, FILTER_VALIDATE_IP)) {
+	    if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+            header("Location: " . $https . $host);
+            exit;
+	    }
+    }
     if (empty($PageUrl['host']) || strstr($url, ".") === false) {
         header("Location: " . $https . $host);
         exit;
