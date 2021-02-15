@@ -1,4 +1,4 @@
-> Any-Proxy可以帮助你反向代理浏览任何网站  
+> Any-Proxy可以帮助你完美地反向代理浏览任何网站  
   
 需配置伪静态，nginx伪静态规则如下：  
 if ( !-e $request_filename) {  
