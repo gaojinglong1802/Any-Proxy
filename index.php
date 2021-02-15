@@ -25,7 +25,7 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
         header("Location: " . $https . $host);
         exit;
     }
-    setcookie("urlss", $http . $PageUrl['host'], "0", "/");
+    setcookie("urlss", $http . $PageUrl['host'], time() + 86400 * 365, "/");
     header("Location: " . $PageUrls);
     exit;
 }
@@ -93,7 +93,6 @@ list($headerstr, $sResponse) = parse_header($sResponse);
 $headarr = explode("\r\n", $headerstr);
 foreach ($headarr as $h) {
     if (strlen($h) > 0) {
-        if (strpos($h, 'Vary') !== false) continue;
         if (strpos($h, 'Connection') !== false) continue;
         if (strpos($h, 'Content-Length') !== false) continue;
         if (strpos($h, 'Transfer-Encoding') !== false) continue;
@@ -139,7 +138,7 @@ function parse_header($sResponse) {
     return $ret;
 }
 // close cURL resource, and free up system resources
-$sResponse = str_replace("http://" . $protocal_host['host']."/", $https . $host."/", $sResponse);
-$sResponse = str_replace("https://" . $protocal_host['host']."/", $https . $host."/", $sResponse);
+$sResponse = str_replace("http://" . $protocal_host['host'], $https . $host, $sResponse);
+$sResponse = str_replace("https://" . $protocal_host['host'], $https . $host, $sResponse);
 curl_close($aAccess);
 echo $sResponse;
