@@ -6,8 +6,8 @@ if ( !-e $request_filename) {
     break;  
 }  
   
-支持POST、cookie  
-可选配置https  
+支持POST、Cookie，Any-Proxy拥有速度快的优点  
+最新版本https/http已均可使用  
 建立好后你可以直接在当前链接后面输入 *q 退出当前页面返回首页  
 
 也可以直接 http://xxx.com/http://需访问的链接 （必须添加http(s)://）  
