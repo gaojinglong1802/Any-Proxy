@@ -21,7 +21,7 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     $http = $PageUrl['scheme'] . "://";
     $PageUrls = $https . $host . $PageUrl['path'] . $query;
     del_cookie();
-    if (empty($PageUrl['host'])) {
+    if (empty($PageUrl['host']) || strstr($url, ".") === false) {
         header("Location: " . $https . $host);
         exit;
     }
@@ -30,11 +30,11 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     exit;
 }
 if (!$_COOKIE['urlss']) {
-    exit('<html><head><meta charset="utf-8"><meta name="viewport" content="width=520, user-scalable=no, target-densitydpi=device-dpi"><title>代理访问_Any-Proxy</title><link rel="stylesheet" type="text/css" href="//s0.pstatp.com/cdn/expire-1-M/bootswatch/3.4.0/paper/bootstrap.min.css"><style type="text/css">.row{margin-top:100px}.page-header{margin-bottom:90px}.expand-transition{margin-top:150px;-webkit-transition:all.5s ease;transition:all.5s ease}</style></head><body><div id="app" class="container"><div class="alert top top-xs alert-dismissible alert-success expand-transition" style="display:none" id="success-tips"></div><div class="alert top top-xs alert-dismissible alert-danger expand-transition" style="display:none" id="error-tips"></div><div class="row row-xs"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"><div class="page-header"><h3 class="text-center h3-xs">Any-Proxy</h3></div><form method="post"><div class="form-group " id="input-wrap"><label class="control-label" for="inputContent">请输入需访问的链接：</label><input type="text" id="inputContent" class="form-control" name="urlss" placeholder="http://"></div><div class="text-right"><input type="submit" class="input_group_addon btn btn-primary" value="GO"></div></div></form></div></div><div align="center" class="expand-transition"><p>你可以直接在当前链接后面输入 *q 退出当前页面返回首页</p><p>可直接在此域名后面加上链接地址访问，如 https://' . $host . '/http://ip38.com </p></div></div><footer class="footer navbar-fixed-bottom" style="text-align:center"><div class="container"><p>请勿访问您当地法律所禁止的网页，否则后果自负。</p><p>©Powered by <a href="https://github.com/yitd/Any-Proxy">Any-Proxy</a></p></div></footer></body></html>');
+    exit('<html><head><meta charset="utf-8"><meta name="viewport" content="width=520, user-scalable=no, target-densitydpi=device-dpi"><title>代理访问_Any-Proxy</title><link rel="stylesheet" type="text/css" href="//s0.pstatp.com/cdn/expire-1-M/bootswatch/3.4.0/paper/bootstrap.min.css"><style type="text/css">.row{margin-top:100px}.page-header{margin-bottom:90px}.expand-transition{margin-top:150px;-webkit-transition:all.5s ease;transition:all.5s ease}</style></head><body><div id="app" class="container"><div class="row row-xs"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"><div class="page-header"><h3 class="text-center h3-xs">Any-Proxy</h3></div><form method="post"><div class="form-group " id="input-wrap"><label class="control-label" for="inputContent">请输入需访问的链接：</label><input type="text" id="inputContent" class="form-control" name="urlss" placeholder="http://"></div><div class="text-right"><input type="submit" class="input_group_addon btn btn-primary" value="GO"></div></div></form></div></div><div align="center" class="expand-transition"><p>在当前链接末尾输入 *q 可以退出当前页面回到首页</p><p>在域名后面加上链接地址即可访问，如 https://' . $host . '/http://ip.cn </p></div></div><footer class="footer navbar-fixed-bottom" style="text-align:center"><div class="container"><p>请勿访问您当地法律所禁止的网页，否则后果自负。</p><p>©Powered by <a href="https://github.com/yitd/Any-Proxy">Any-Proxy</a></p></div></footer></body></html>');
 }
 //代理的域名及使用的协议最后不用加/
 $target_host = $_COOKIE['urlss'];
-if (strstr($target_host, "http") === false) {
+if (substr($target_host, 0, 4) != "http") {
     $target_host = "http://" . $target_host;
 }
 //解决中文乱码
@@ -50,7 +50,7 @@ curl_setopt($aAccess, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, true);
 curl_setopt($aAccess, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($aAccess, CURLOPT_SSL_VERIFYHOST, false);
-curl_setopt($aAccess, CURLOPT_TIMEOUT, 60);
+curl_setopt($aAccess, CURLOPT_TIMEOUT, 10);
 curl_setopt($aAccess, CURLOPT_BINARYTRANSFER, true);
 //关系数组转换成字符串，每个键值对中间用=连接，以; 分割
 function array_to_str($array) {
