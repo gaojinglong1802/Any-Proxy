@@ -1,17 +1,17 @@
 <?php
 $host = $_SERVER['HTTP_HOST'];
-$qest = $_SERVER['REQUEST_URI'];
-$https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-if (substr($qest, -2) == "*q") {
+$path = $_SERVER['REQUEST_URI'];
+$http_host = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+if (substr($path, -2) == "*q") {
     del_cookie();
-    header("Location: " . $https . $host);
+    header("Location: " . $http_host . $host);
     exit;
 }
-if (substr($qest, 1, 7) == "http://" || substr($qest, 1, 8) == "https://" || $_POST['urlss']) {
+if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_POST['urlss']) {
     if ($_POST['urlss']) {
         $url = $_POST['urlss'];
     } else {
-        $url = substr($qest, 1);
+        $url = substr($path, 1);
     }
     if (strstr($url, "http") === false) {
         $url = "http://" . $url;
@@ -19,12 +19,8 @@ if (substr($qest, 1, 7) == "http://" || substr($qest, 1, 8) == "https://" || $_P
     $PageUrl = parse_url($url);
     $PageUrl['query'] ? $query = "?" . $PageUrl['query'] : $query = "";
     $http = $PageUrl['scheme'] . "://";
-    $PageUrls = $https . $host . $PageUrl['path'] . $query;
+    $PageUrls = $http_host . $host . $PageUrl['path'] . $query;
     del_cookie();
-    if (empty($PageUrl['host'])) {
-        header("Location: " . $https . $host);
-        exit;
-    }
     setcookie("urlss", $http . $PageUrl['host'], "0", "/");
     header("Location: " . $PageUrls);
     exit;
@@ -44,7 +40,7 @@ $protocal_host = parse_url($target_host);
 //获取数组的长度
 $aAccess = curl_init();
 // set URL and other appropriate options
-curl_setopt($aAccess, CURLOPT_URL, $protocal_host['scheme'] . "://" . $protocal_host['host'] . $qest);
+curl_setopt($aAccess, CURLOPT_URL, $protocal_host['scheme'] . "://" . $protocal_host['host'] . $path);
 curl_setopt($aAccess, CURLOPT_HEADER, true);
 curl_setopt($aAccess, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, true);
@@ -66,7 +62,7 @@ function array_to_str($array) {
     return urldecode($string);
 }
 if ($_SERVER['HTTP_REFERER']) {
-    $referer = str_replace($https . $host, $protocal_host['scheme'] . "://" . $protocal_host['host'], $_SERVER['HTTP_REFERER']);
+    $referer = str_replace($http_host . $host, $protocal_host['scheme'] . "://" . $protocal_host['host'], $_SERVER['HTTP_REFERER']);
 }
 if (empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $remoteip = $_SERVER['REMOTE_ADDR'];
@@ -139,7 +135,7 @@ function parse_header($sResponse) {
     return $ret;
 }
 // close cURL resource, and free up system resources
-$sResponse = str_replace("http://" . $protocal_host['host']."/", $https . $host."/", $sResponse);
-$sResponse = str_replace("https://" . $protocal_host['host']."/", $https . $host."/", $sResponse);
+$sResponse = str_replace("http://" . $protocal_host['host']."/", $http_host . $host."/", $sResponse);
+$sResponse = str_replace("https://" . $protocal_host['host']."/", $http_host . $host."/", $sResponse);
 curl_close($aAccess);
 echo $sResponse;
