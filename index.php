@@ -1,17 +1,17 @@
 <?php
-$http_host = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-if (strstr($_SERVER['REQUEST_URI'], "*q") !== false) {
-    foreach ($_COOKIE as $key => $value) {
-        setcookie($key, null);
-    }
-    header("Location: " . $http_host . $_SERVER['HTTP_HOST']);
+$host = $_SERVER['HTTP_HOST'];
+$qest = $_SERVER['REQUEST_URI'];
+$https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+if (substr($qest, -2) == "*q") {
+    del_cookie();
+    header("Location: " . $https . $host);
     exit;
 }
-if (substr($_SERVER['REQUEST_URI'], 1, 4) == "http" || $_POST['urlss']) {
+if (substr($qest, 1, 7) == "http://" || substr($qest, 1, 8) == "https://" || $_POST['urlss']) {
     if ($_POST['urlss']) {
         $url = $_POST['urlss'];
     } else {
-        $url = substr($_SERVER['REQUEST_URI'], 1);
+        $url = substr($qest, 1);
     }
     if (strstr($url, "http") === false) {
         $url = "http://" . $url;
@@ -19,16 +19,18 @@ if (substr($_SERVER['REQUEST_URI'], 1, 4) == "http" || $_POST['urlss']) {
     $PageUrl = parse_url($url);
     $PageUrl['query'] ? $query = "?" . $PageUrl['query'] : $query = "";
     $http = $PageUrl['scheme'] . "://";
-    $PageUrls = $http_host . $_SERVER['HTTP_HOST'] . $PageUrl['path'] . $query;
-    foreach ($_COOKIE as $key => $value) {
-        setcookie($key, null);
+    $PageUrls = $https . $host . $PageUrl['path'] . $query;
+    del_cookie();
+    if (empty($PageUrl['host'])) {
+        header("Location: " . $https . $host);
+        exit;
     }
     setcookie("urlss", $http . $PageUrl['host'], "0", "/");
     header("Location: " . $PageUrls);
     exit;
 }
 if (!$_COOKIE['urlss']) {
-    exit('<html><head><meta charset="utf-8"><meta name="viewport" content="width=520, user-scalable=no, target-densitydpi=device-dpi"><title>代理访问_Any-Proxy</title><link rel="stylesheet" type="text/css" href="//s0.pstatp.com/cdn/expire-1-M/bootswatch/3.4.0/paper/bootstrap.min.css"><style type="text/css">.row{margin-top:100px}.page-header{margin-bottom:90px}.expand-transition{margin-top:150px;-webkit-transition:all.5s ease;transition:all.5s ease}</style></head><body><div id="app" class="container"><div class="alert top top-xs alert-dismissible alert-success expand-transition" style="display:none" id="success-tips"></div><div class="alert top top-xs alert-dismissible alert-danger expand-transition" style="display:none" id="error-tips"></div><div class="row row-xs"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"><div class="page-header"><h3 class="text-center h3-xs">Any-Proxy</h3></div><form method="post"><div class="form-group " id="input-wrap"><label class="control-label" for="inputContent">请输入需访问的链接：</label><input type="text" id="inputContent" class="form-control" name="urlss" placeholder="http://"></div><div class="text-right"><input type="submit" class="input_group_addon btn btn-primary" value="GO"></div></div></form></div></div><div align="center" class="expand-transition"><p>你可以直接在当前链接后面输入 *q 退出当前页面返回首页</p><p>可直接在此域名后面加上链接地址访问，如 https://' . $_SERVER['HTTP_HOST'] . '/http://ip38.com </p></div></div><footer class="footer navbar-fixed-bottom" style="text-align:center"><div class="container"><p>请勿访问您当地法律所禁止的网页，否则后果自负。</p><p>©Powered by <a href="https://github.com/yitd/Any-Proxy">Any-Proxy</a></p></div></footer></body></html>');
+    exit('<html><head><meta charset="utf-8"><meta name="viewport" content="width=520, user-scalable=no, target-densitydpi=device-dpi"><title>代理访问_Any-Proxy</title><link rel="stylesheet" type="text/css" href="//s0.pstatp.com/cdn/expire-1-M/bootswatch/3.4.0/paper/bootstrap.min.css"><style type="text/css">.row{margin-top:100px}.page-header{margin-bottom:90px}.expand-transition{margin-top:150px;-webkit-transition:all.5s ease;transition:all.5s ease}</style></head><body><div id="app" class="container"><div class="alert top top-xs alert-dismissible alert-success expand-transition" style="display:none" id="success-tips"></div><div class="alert top top-xs alert-dismissible alert-danger expand-transition" style="display:none" id="error-tips"></div><div class="row row-xs"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"><div class="page-header"><h3 class="text-center h3-xs">Any-Proxy</h3></div><form method="post"><div class="form-group " id="input-wrap"><label class="control-label" for="inputContent">请输入需访问的链接：</label><input type="text" id="inputContent" class="form-control" name="urlss" placeholder="http://"></div><div class="text-right"><input type="submit" class="input_group_addon btn btn-primary" value="GO"></div></div></form></div></div><div align="center" class="expand-transition"><p>你可以直接在当前链接后面输入 *q 退出当前页面返回首页</p><p>可直接在此域名后面加上链接地址访问，如 https://' . $host . '/http://ip38.com </p></div></div><footer class="footer navbar-fixed-bottom" style="text-align:center"><div class="container"><p>请勿访问您当地法律所禁止的网页，否则后果自负。</p><p>©Powered by <a href="https://github.com/yitd/Any-Proxy">Any-Proxy</a></p></div></footer></body></html>');
 }
 //代理的域名及使用的协议最后不用加/
 $target_host = $_COOKIE['urlss'];
@@ -39,18 +41,10 @@ if (strstr($target_host, "http") === false) {
 #header("Content-Type:text/html;charset=GBK");
 //处理代理的主机得到协议和主机名称
 $protocal_host = parse_url($target_host);
-//以.分割域名字符串
-$rootdomain = explode(".", $_SERVER['HTTP_HOST']);
 //获取数组的长度
-$lenth = count($rootdomain);
-//获取顶级域名
-$top = "." . $rootdomain[$lenth - 1];
-//获取主域名
-$root = "." . $rootdomain[$lenth - 2];
 $aAccess = curl_init();
-// --------------------
 // set URL and other appropriate options
-curl_setopt($aAccess, CURLOPT_URL, $protocal_host['scheme'] . "://" . $protocal_host['host'] . $_SERVER['REQUEST_URI']);
+curl_setopt($aAccess, CURLOPT_URL, $protocal_host['scheme'] . "://" . $protocal_host['host'] . $qest);
 curl_setopt($aAccess, CURLOPT_HEADER, true);
 curl_setopt($aAccess, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, true);
@@ -58,8 +52,6 @@ curl_setopt($aAccess, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($aAccess, CURLOPT_SSL_VERIFYHOST, false);
 curl_setopt($aAccess, CURLOPT_TIMEOUT, 60);
 curl_setopt($aAccess, CURLOPT_BINARYTRANSFER, true);
-//if(!empty($_SERVER['HTTP_REFERER']))
-//curl_setopt($aAccess,CURLOPT_REFERER,$_SERVER['HTTP_REFERER']) ;
 //关系数组转换成字符串，每个键值对中间用=连接，以; 分割
 function array_to_str($array) {
     $string = "";
@@ -74,7 +66,7 @@ function array_to_str($array) {
     return urldecode($string);
 }
 if ($_SERVER['HTTP_REFERER']) {
-    $referer = str_replace($http_host . $_SERVER['HTTP_HOST'], $protocal_host['scheme'] . "://" . $protocal_host['host'], $_SERVER['HTTP_REFERER']);
+    $referer = str_replace($https . $host, $protocal_host['scheme'] . "://" . $protocal_host['host'], $_SERVER['HTTP_REFERER']);
 }
 if (empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $remoteip = $_SERVER['REMOTE_ADDR'];
@@ -105,12 +97,20 @@ foreach ($headarr as $h) {
         if (strpos($h, 'Transfer-Encoding') !== false) continue;
         if (strpos($h, 'Connection') !== false) continue;
         if (strpos($h, 'HTTP/1.1 100 Continue') !== false) continue;
+        if (strpos($h, 'Vary') !== false) continue;
         if (strpos($h, 'Set-Cookie') !== false) {
             $targetcookie = $h . ";";
-            $res_cookie = preg_replace("/domain=.*?;/", "domain=" . $root . $top . ";", $targetcookie);
+            $res_cookie = preg_replace("/domain=.*?;/", "domain=" . $host .";", $targetcookie);
             $h = substr($res_cookie, 0, strlen($res_cookie) - 1);
+            header($h, false);
+        }else{
+            header($h);
         }
-        header($h);
+    }
+}
+function del_cookie() {
+    foreach ($_COOKIE as $key => $value) {
+        setcookie($key, null, time() - 3600, "/");
     }
 }
 function get_client_header() {
@@ -139,7 +139,7 @@ function parse_header($sResponse) {
     return $ret;
 }
 // close cURL resource, and free up system resources
-$sResponse = str_replace("http://" . $protocal_host['host']."/", $http_host . $_SERVER['HTTP_HOST']."/", $sResponse);
-$sResponse = str_replace("https://" . $protocal_host['host']."/", $http_host . $_SERVER['HTTP_HOST']."/", $sResponse);
+$sResponse = str_replace("http://" . $protocal_host['host']."/", $https . $host."/", $sResponse);
+$sResponse = str_replace("https://" . $protocal_host['host']."/", $https . $host."/", $sResponse);
 curl_close($aAccess);
 echo $sResponse;
