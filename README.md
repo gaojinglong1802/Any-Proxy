@@ -14,7 +14,7 @@
 > 在域名后面加上链接地址即可访问  
 > http://xxx.com/http://+需访问的链接 （必须添加http(s)://）  
   
-> 如 ：http://xxx.com/http://ip.cn/  
+> 如 ：http://xxx.com/http://ip38.com/  
   
   
   
