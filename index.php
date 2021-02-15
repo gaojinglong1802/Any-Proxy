@@ -3,11 +3,10 @@ $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
 $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
 //$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP，仅在部分网站中有效
-$anyip = 1;
+$anyip = 2;
 if (substr($path, -2) == "*q") {
     del_cookie();
-    header("Location: " . $https . $host);
-    exit;
+    loc_host();
 }
 if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_POST['urlss']) {
     if ($_POST['urlss']) {
@@ -23,15 +22,13 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     $http = $PageUrl['scheme'] . "://";
     $PageUrls = $https . $host . $PageUrl['path'] . $query;
     del_cookie();
-    if(filter_var($ip, FILTER_VALIDATE_IP)) {
-	    if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
-            header("Location: " . $https . $host);
-            exit;
-	    }
+    if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP)) {
+        if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+            loc_host();
+        }
     }
-    if (empty($PageUrl['host']) || strstr($url, ".") === false) {
-        header("Location: " . $https . $host);
-        exit;
+    if (strstr($url, ".") === false || $PageUrl['host'] == $host) {
+        loc_host();
     }
     setcookie("urlss", $http . $PageUrl['host'], time() + 86400 * 365, "/");
     header("Location: " . $PageUrls);
@@ -46,9 +43,20 @@ if (substr($target_host, 0, 4) != "http") {
     $target_host = "http://" . $target_host;
 }
 //解决中文乱码
-#header("Content-Type:text/html;charset=GBK");
+//header("Content-Type:text/html;charset=GBK");
 //处理代理的主机得到协议和主机名称
 $protocal_host = parse_url($target_host);
+//判断请求url或ip是否合法
+if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
+    del_cookie();
+    loc_host();
+}
+if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP)) {
+    if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+        del_cookie();
+        loc_host();
+    }
+}
 //获取数组的长度
 $aAccess = curl_init();
 // set URL and other appropriate options
@@ -121,6 +129,12 @@ function del_cookie() {
     foreach ($_COOKIE as $key => $value) {
         setcookie($key, null, time() - 3600, "/");
     }
+}
+function loc_host() {
+    global $https;
+    global $host;
+    header("Location: " . $https . $host);
+    exit;
 }
 function get_client_header() {
     $headers = array();
