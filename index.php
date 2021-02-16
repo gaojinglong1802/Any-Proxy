@@ -171,7 +171,8 @@ function parse_header($sResponse) {
     return $ret;
 }
 //解决中文乱码
-if (stristr($sResponse, "GBK") || stristr($sResponse, "GB2312")) {
+$charlen = stripos($sResponse, "charset");
+if (stristr(substr($sResponse, $charlen, 18) , "GBK") || stristr(substr($sResponse, $charlen, 18) , "GB2312")) {
     $sResponse = mb_convert_encoding($sResponse, "UTF-8", "GBK,GB2312,BIG5");
 }
 // close cURL resource, and free up system resources
