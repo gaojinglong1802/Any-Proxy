@@ -27,4 +27,4 @@
 ![Image](https://p.pstatp.com/origin/fe81000376fc445be379)  
 
 > 基于：https://github.com/koala0529/reverse-proxy-php 修改  
-> 切勿用于非法用途，否则后果自负。
+> 请勿用于非法用途，否则后果自负。
