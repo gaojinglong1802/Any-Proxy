@@ -176,9 +176,9 @@ $charlen = stripos($sResponse, "charset");
 if (stristr(substr($sResponse, $charlen, 18) , "GBK") || stristr(substr($sResponse, $charlen, 18) , "GB2312")) {
     $sResponse = mb_convert_encoding($sResponse, "UTF-8", "GBK,GB2312,BIG5");
 }
+header("Pragma: no-cache");
 // close cURL resource, and free up system resources
 $sResponse = str_replace("http://" . $protocal_host['host'], $https . $host, $sResponse);
 $sResponse = str_replace("https://" . $protocal_host['host'], $https . $host, $sResponse);
 curl_close($aAccess);
-header("Pragma: no-cache");
 echo $sResponse;
