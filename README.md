@@ -15,13 +15,12 @@
 > 如果中文乱码在倒数第二行设置 header("Content-Type:text/html;charset=gb2312");  
   
 > 在当前链接末尾输入 *q 可以退出当前页面回到首页  
-> 在域名后面加上链接地址即可访问  
-> http://xxx.com/http://+需访问的链接 （必须添加http(s)://）  
+> 在域名后面加上链接地址即可访问：  
+> https://turl.chat/http://+需访问的链接 （必须添加http(s)://）  
   
-> 如 ：http://xxx.com/http://ip38.com/  
+> 如 ：https://turl.chat/http://ip38.com/  
   
-  
-  
+> 测试站点：https://turl.chat/ 请求量超过100将会无法访问  
   
   
 ![Image](https://p.pstatp.com/origin/1386c00047b0dffbf5283)  
