@@ -6,7 +6,7 @@ $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SE
 $anyip = 1;
 if (substr($path, -2) == "*q") {
     del_cookie();
-    echo "<script>window.location.href='" . $https . $host . "';</script>";
+	header("Location: " . $https . $host);
     exit;
 }
 if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_POST['urlss']) {
@@ -123,11 +123,13 @@ list($headerstr, $sResponse) = parse_header($sResponse);
 $headarr = explode("\r\n", $headerstr);
 foreach ($headarr as $h) {
     if (strlen($h) > 0) {
+        if (strpos($h, 'ETag') !== false) continue;
+        if (strpos($h, 'Connection') !== false) continue;
+        if (strpos($h, 'Cache-Control') !== false) continue;
         if (strpos($h, 'Content-Length') !== false) continue;
         if (strpos($h, 'Transfer-Encoding') !== false) continue;
-        if (strpos($h, 'Connection') !== false) continue;
         if (strpos($h, 'HTTP/1.1 100 Continue') !== false) continue;
-        if (strpos($h, 'Cache-Control') !== false) continue;
+        if (strpos($h, 'Strict-Transport-Security') !== false) continue;
         if (strpos($h, 'Set-Cookie') !== false) {
             $targetcookie = $h . ";";
             //如果返回到客户端cookie不正常可把下行中的$root . $top换成$host
@@ -178,4 +180,5 @@ if (stristr(substr($sResponse, $charlen, 18) , "GBK") || stristr(substr($sRespon
 $sResponse = str_replace("http://" . $protocal_host['host'], $https . $host, $sResponse);
 $sResponse = str_replace("https://" . $protocal_host['host'], $https . $host, $sResponse);
 curl_close($aAccess);
+header("Pragma: no-cache");
 echo $sResponse;
