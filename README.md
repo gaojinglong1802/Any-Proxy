@@ -7,9 +7,9 @@
 >     break;  
 > }  
   
-> 如果中文乱码在倒数第二行设置header("Content-Type:text/html;charset=gb2312");  
 > 支持POST、Cookie，https/http均可使用  
 > 支持伪造IP，$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP
+> 如果中文乱码在倒数第二行设置 header("Content-Type:text/html;charset=gb2312");  
   
 > 在当前链接末尾输入 *q 可以退出当前页面回到首页  
 > 在域名后面加上链接地址即可访问  
@@ -24,3 +24,4 @@
 ![Image](https://p.pstatp.com/origin/1386c00047b0dffbf5283)  
 
 > 基于：https://github.com/koala0529/reverse-proxy-php 修改  
+> 切勿用于非法用途，否则后果自负。
