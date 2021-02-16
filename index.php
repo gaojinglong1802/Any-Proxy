@@ -3,10 +3,11 @@ $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
 $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == "https")) ? "https://" : "http://";
 //$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP，仅在部分网站中有效
-$anyip = 1;
+$anyip = 2;
 if (substr($path, -2) == "*q") {
     del_cookie();
-    loc_host();
+    echo "<script>alert('Cookie已清除，即将返回首页！');window.location.href='" . $https . $host . "';</script>";
+    exit;
 }
 if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_POST['urlss']) {
     if ($_POST['urlss']) {
@@ -22,13 +23,16 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     $http = $PageUrl['scheme'] . "://";
     $PageUrls = $https . $host . $PageUrl['path'] . $query;
     del_cookie();
+    //判断请求url或ip是否合法
     if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP)) {
-        if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false) {
-            loc_host();
+        if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+            echo "<script>alert('请求的ip被禁止！');window.location.href='" . $https . $host . "';</script>";
+            exit;
         }
     }
     if (strstr($url, ".") === false || $PageUrl['host'] == $host) {
-        loc_host();
+        echo "<script>alert('请求的域名被有误！');window.location.href='" . $https . $host . "';</script>";
+        exit;
     }
     setcookie("urlss", $http . $PageUrl['host'], time() + 86400 * 365, "/");
     header("Location: " . $PageUrls);
@@ -44,22 +48,24 @@ if (substr($target_host, 0, 4) != "http") {
 //处理代理的主机得到协议和主机名称
 $protocal_host = parse_url($target_host);
 //以.分割域名字符串
-$rootdomain=explode(".",$_SERVER["SERVER_NAME"]);
+$rootdomain = explode(".",$_SERVER["SERVER_NAME"]);
 //获取数组的长度
-$lenth=count($rootdomain);
+$lenth = count($rootdomain);
 //获取顶级域名
-$top=".".$rootdomain[$lenth-1];
+$top = ".".$rootdomain[$lenth-1];
 //获取主域名
-$root=".".$rootdomain[$lenth-2];
+$root = ".".$rootdomain[$lenth-2];
 //判断请求url或ip是否合法
 if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
     del_cookie();
-    loc_host();
+    echo "<script>alert('请求的域名被有误！');window.location.href='" . $https . $host . "';</script>";
+    exit;
 }
 if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP)) {
-    if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false) {
+    if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
         del_cookie();
-        loc_host();
+        echo "<script>alert('请求的ip被禁止！');window.location.href='" . $https . $host . "';</script>";
+        exit;
     }
 }
 //获取数组的长度
@@ -124,7 +130,7 @@ foreach ($headarr as $h) {
         if (strpos($h, 'HTTP/1.1 100 Continue') !== false) continue;
         if (strpos($h, 'Set-Cookie') !== false) {
             $targetcookie = $h . ";";
-            //如果返回到客户端cookie不正常把下行中的$host换成$root . $top
+            //如果返回到客户端cookie不正常可把下行中的$host换成$root . $top
             $res_cookie = preg_replace("/domain=.*?;/", "domain=" . $host .";", $targetcookie);
             $h = substr($res_cookie, 0, strlen($res_cookie) - 1);
             header($h, false);
@@ -137,12 +143,6 @@ function del_cookie() {
     foreach ($_COOKIE as $key => $value) {
         setcookie($key, null, time() - 3600, "/");
     }
-}
-function loc_host() {
-    global $https;
-    global $host;
-    header("Location: " . $https . $host);
-    exit;
 }
 function get_client_header() {
     $headers = array();
@@ -172,6 +172,9 @@ function parse_header($sResponse) {
 // close cURL resource, and free up system resources
 $sResponse = str_replace("http://" . $protocal_host['host'], $https . $host, $sResponse);
 $sResponse = str_replace("https://" . $protocal_host['host'], $https . $host, $sResponse);
+//下两行代码为添加base
+#$pregRule = "/<head>/";
+#$sResponse = preg_replace($pregRule, '<head><base href="' . $https . $host . '/">', $sResponse);
 curl_close($aAccess);
 //解决中文乱码去掉下行注释符号#
 #header("Content-Type:text/html;charset=gb2312");
