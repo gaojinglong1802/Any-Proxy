@@ -140,9 +140,6 @@ $pregRule = "/[\'|\"](?:http)(.*?)[\'|\"]/";
 $sResponse = preg_replace($pregRule, '"/http${1}${3}"', $sResponse);
 $pregRule = "/=[\'|\"](?:\/\/)(.*?)[\'|\"]/";
 $sResponse = preg_replace($pregRule, '="/'.$http.'${1}${3}"', $sResponse);
-//以下两行代码可添加base
-#$pregRule = "/<head>/";
-#$sResponse = preg_replace($pregRule, '<head><base href="' . $https . $host . '/' . $protocal_host['scheme'] . '://' . $protocal_host['host'] . '/">', $sResponse);
 curl_close($aAccess);
 //解决中文乱码去掉下行注释符号#
 #header("Content-Type:text/html;charset=gb2312");
