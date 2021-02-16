@@ -9,8 +9,8 @@
 > }  
   
 > index.php 外链、外链图片、外链静态文件等请求不通过Any-Proxy，地址栏不会显示目标域名  
-> index_all.php 区别为所有外链、外链图片、外链静态文件等请求都通过Any-Proxy，地址栏会显示目标域名  
-> index_all.php 访问速度有所降低  
+> index_all.php 区别为传统版，地址栏会显示目标域名，性能不及前者  
+> index_all.php 所有外链、外链图片、外链静态文件等请求都通过Any-Proxy
   
 > 支持POST、Cookie，https/http均可使用  
 > 支持伪造IP，$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP  
