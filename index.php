@@ -172,9 +172,6 @@ function parse_header($sResponse) {
 // close cURL resource, and free up system resources
 $sResponse = str_replace("http://" . $protocal_host['host'], $https . $host, $sResponse);
 $sResponse = str_replace("https://" . $protocal_host['host'], $https . $host, $sResponse);
-//下两行代码为添加base
-#$pregRule = "/<head>/";
-#$sResponse = preg_replace($pregRule, '<head><base href="' . $https . $host . '/">', $sResponse);
 curl_close($aAccess);
 //解决中文乱码去掉下行注释符号#
 #header("Content-Type:text/html;charset=gb2312");
