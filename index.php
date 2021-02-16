@@ -48,7 +48,7 @@ if (substr($target_host, 0, 4) != "http") {
 //处理代理的主机得到协议和主机名称
 $protocal_host = parse_url($target_host);
 //以.分割域名字符串
-$rootdomain = explode(".",$_SERVER["SERVER_NAME"]);
+$rootdomain = explode(".",$host);
 //获取数组的长度
 $lenth = count($rootdomain);
 //获取顶级域名
@@ -131,8 +131,8 @@ foreach ($headarr as $h) {
         if (strpos($h, 'Cache-Control') !== false) continue;
         if (strpos($h, 'Set-Cookie') !== false) {
             $targetcookie = $h . ";";
-            //如果返回到客户端cookie不正常可把下行中的$host换成$root . $top
-            $res_cookie = preg_replace("/domain=.*?;/", "", $targetcookie);
+            //如果返回到客户端cookie不正常可把下行中的$root . $top换成$host
+            $res_cookie = preg_replace("/domain=.*?;/", "domain=" . $root . $top .";", $targetcookie);
             $h = substr($res_cookie, 0, strlen($res_cookie) - 1);
             header($h, false);
         } else {
