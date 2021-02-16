@@ -7,6 +7,9 @@
 >     break;  
 > }  
   
+> index.php外链、外链图片、外链静态文件等请求不通过Any-Proxy，地址栏不会显示目标域名  
+> index_all.php区别为所有外链、外链图片、外链静态文件等请求都通过Any-Proxy，地址栏会显示目标域名  
+  
 > 支持POST、Cookie，https/http均可使用  
 > 支持伪造IP，$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP
 > 如果中文乱码在倒数第二行设置 header("Content-Type:text/html;charset=gb2312");  
