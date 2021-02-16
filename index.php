@@ -6,7 +6,7 @@ $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SE
 $anyip = 1;
 if (substr($path, -2) == "*q") {
     del_cookie();
-    echo "<script>alert('Cookie已清除，即将返回首页！');window.location.href='" . $https . $host . "';</script>";
+    echo "<script>window.location.href='" . $https . $host . "';</script>";
     exit;
 }
 if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_POST['urlss']) {
@@ -31,7 +31,7 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
         }
     }
     if (strstr($url, ".") === false || $PageUrl['host'] == $host) {
-        echo "<script>alert('请求的域名被有误！');window.location.href='" . $https . $host . "';</script>";
+        echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
         exit;
     }
     setcookie("urlss", $http . $PageUrl['host'], time() + 86400 * 365, "/");
@@ -58,7 +58,7 @@ $root = ".".$rootdomain[$lenth-2];
 //判断请求url或ip是否合法
 if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
     del_cookie();
-    echo "<script>alert('请求的域名被有误！');window.location.href='" . $https . $host . "';</script>";
+    echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
     exit;
 }
 if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP)) {
