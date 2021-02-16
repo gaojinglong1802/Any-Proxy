@@ -7,8 +7,8 @@
 >     break;  
 > }  
   
-> index.php外链、外链图片、外链静态文件等请求不通过Any-Proxy，地址栏不会显示目标域名  
-> index_all.php区别为所有外链、外链图片、外链静态文件等请求都通过Any-Proxy，地址栏会显示目标域名  
+> index.php 外链、外链图片、外链静态文件等请求不通过Any-Proxy，地址栏不会显示目标域名  
+> index_all.php 区别为所有外链、外链图片、外链静态文件等请求都通过Any-Proxy，地址栏会显示目标域名  
   
 > 支持POST、Cookie，https/http均可使用  
 > 支持伪造IP，$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP  
@@ -23,7 +23,8 @@
 > 测试站点：https://turl.chat/ 请求量超过50次将会无法访问  
   
   
-![Image](https://p.pstatp.com/origin/1386c00047b0dffbf5283)  
+![Image](https://p.pstatp.com/origin/138030002877b253dea64)  
+![Image](https://p.pstatp.com/origin/1382b0002b3eade9c9e04)  
 
 > 基于：https://github.com/koala0529/reverse-proxy-php 修改  
 > 切勿用于非法用途，否则后果自负。
