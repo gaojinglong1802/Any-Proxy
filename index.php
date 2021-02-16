@@ -6,7 +6,7 @@ $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SE
 $anyip = 1;
 if (substr($path, -2) == "*q") {
     del_cookie();
-	header("Location: " . $https . $host);
+    header("Location: " . $https . $host);
     exit;
 }
 if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_POST['urlss']) {
