@@ -7,6 +7,7 @@
 >     break;  
 > }  
   
+> 如果中文乱码在倒数第二行设置header("Content-Type:text/html;charset=gb2312");  
 > 支持POST、Cookie，https/http均可使用  
 > 支持伪造IP，$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP
   
