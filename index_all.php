@@ -68,9 +68,8 @@ if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP)) {
         exit;
     }
 }
-//获取数组的长度
-$aAccess = curl_init();
 // set URL and other appropriate options
+$aAccess = curl_init();
 curl_setopt($aAccess, CURLOPT_URL, $protocal_host['scheme'] . "://" . $protocal_host['host'] . $path);
 curl_setopt($aAccess, CURLOPT_HEADER, true);
 curl_setopt($aAccess, CURLOPT_RETURNTRANSFER, true);
