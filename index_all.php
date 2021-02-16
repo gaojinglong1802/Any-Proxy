@@ -168,11 +168,14 @@ if (stristr(substr($sResponse, $charlen, 18) , "GBK") || stristr(substr($sRespon
 }
 header("Pragma: no-cache");
 // close cURL resource, and free up system resources
-$pregRule = "/=[\'|\"](?!\/\/)(?:\/)(.*?)[\'|\"]/";
+$pregRule = "/=[\'|\"](?!\/\/)(?:\/)(.*?)[\'|\"]/s";
 $sResponse = preg_replace($pregRule, '="/' . $protocal_host['scheme'] . '://' . $protocal_host['host'] . '/${1}${2}"', $sResponse);
-$pregRule = "/[\'|\"](?:http)(.*?)[\'|\"]/";
-$sResponse = preg_replace($pregRule, '"/http${1}${3}"', $sResponse);
+$pregRule = "/=[\'|\"](?:http)(.*?)[\'|\"]/";
+$sResponse = preg_replace($pregRule, '="/http${1}${3}"', $sResponse);
 $pregRule = "/=[\'|\"](?:\/\/)(.*?)[\'|\"]/";
 $sResponse = preg_replace($pregRule, '="/' . $http . '${1}${3}"', $sResponse);
+//以下两行代码可添加base
+$pregRule = "/<head>/";
+$sResponse = preg_replace($pregRule, '<head><base href="' . $https . $host . '/' . $protocal_host['scheme'] . '://' . $protocal_host['host'] . '/">', $sResponse);
 curl_close($aAccess);
 echo $sResponse;
