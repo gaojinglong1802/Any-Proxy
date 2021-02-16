@@ -6,7 +6,7 @@ $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SE
 $anyip = 1;
 if (substr($path, -2) == "*q") {
     del_cookie();
-    echo "<script>window.location.href='" . $https . $host . "';</script>";
+	header("Location: " . $https . $host);
     exit;
 }
 if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_POST['urlss']) {
@@ -177,6 +177,7 @@ $charlen = stripos($sResponse, "charset");
 if (stristr(substr($sResponse, $charlen, 18) , "GBK") || stristr(substr($sResponse, $charlen, 18) , "GB2312")) {
     $sResponse = mb_convert_encoding($sResponse, "UTF-8", "GBK,GB2312,BIG5");
 }
+header("Pragma: no-cache");
 // close cURL resource, and free up system resources
 $sResponse = str_replace("http://" . $protocal_host['host'], $https . $host, $sResponse);
 $sResponse = str_replace("https://" . $protocal_host['host'], $https . $host, $sResponse);
