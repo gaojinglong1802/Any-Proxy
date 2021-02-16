@@ -1,5 +1,5 @@
 > Any-Proxy可以帮助你完美地反向代理浏览任意网站  
-> 免去复杂的程序，仅需8KB文件即可兼容性极好地高速代理访问任意网站  
+> 免去复杂的程序，不到10KB文件即可兼容性极好地高速代理访问任意网站  
   
 > 需配置伪静态，nginx伪静态规则如下：  
 > if ( !-e $request_filename) {  
@@ -20,7 +20,7 @@
   
 > 如 ：https://turl.chat/http://ip38.com/  
   
-> 测试站点：https://turl.chat/ 请求量超过100将会无法访问  
+> 测试站点：https://turl.chat/ 请求量超过50次将会无法访问  
   
   
 ![Image](https://p.pstatp.com/origin/1386c00047b0dffbf5283)  
