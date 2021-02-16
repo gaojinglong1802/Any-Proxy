@@ -58,7 +58,7 @@ function array_to_str($array) {
     return urldecode($string);
 }
 if ($_SERVER['HTTP_REFERER']) {
-    $referer = str_replace($host, $protocal_host['host'], $_SERVER['HTTP_REFERER']);
+    $referer = str_replace($https . $host . "/", "", $_SERVER['HTTP_REFERER']);
 }
 if ($anyip == "1") {
     $remoteip = $_SERVER['HTTP_CLIENT_IP'];
@@ -140,6 +140,9 @@ $pregRule = "/[\'|\"](?:http)(.*?)[\'|\"]/";
 $sResponse = preg_replace($pregRule, '"/http${1}${3}"', $sResponse);
 $pregRule = "/=[\'|\"](?:\/\/)(.*?)[\'|\"]/";
 $sResponse = preg_replace($pregRule, '="/'.$http.'${1}${3}"', $sResponse);
+//以下两行代码可添加base
+#$pregRule = "/<head>/";
+#$sResponse = preg_replace($pregRule, '<head><base href="' . $https . $host . '/' . $protocal_host['scheme'] . '://' . $protocal_host['host'] . '/">', $sResponse);
 curl_close($aAccess);
 //解决中文乱码去掉下行注释符号#
 #header("Content-Type:text/html;charset=gb2312");
