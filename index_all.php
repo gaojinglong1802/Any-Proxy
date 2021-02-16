@@ -4,7 +4,7 @@ $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
 $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == "https")) ? "https://" : "http://";
 //$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP，仅在部分网站中有效
-$anyip = 2;
+$anyip = 1;
 if (substr($path, -2) == "*q") {
     del_cookie();
     echo "<script>alert('Cookie已清除，即将返回首页！');window.location.href='" . $https . $host . "';</script>";
@@ -93,6 +93,7 @@ foreach ($headarr as $h) {
         if (strpos($h, 'Transfer-Encoding') !== false) continue;
         if (strpos($h, 'Connection') !== false) continue;
         if (strpos($h, 'HTTP/1.1 100 Continue') !== false) continue;
+        if (strpos($h, 'Cache-Control') !== false) continue;
         if (strpos($h, 'Set-Cookie') !== false) {
             $targetcookie = $h . ";";
             $res_cookie = preg_replace("/domain=.*?;/", "domain=" . $host .";", $targetcookie);
@@ -133,6 +134,10 @@ function parse_header($sResponse) {
         }
     return $ret;
 }
+//解决中文乱码
+if (stristr($sResponse, "GBK") || stristr($sResponse, "GB2312")) {
+    $sResponse = mb_convert_encoding($sResponse, "UTF-8", "GBK,GB2312,BIG5");
+}
 // close cURL resource, and free up system resources
 $pregRule = "/=[\'|\"](?!\/\/)(?:\/)(.*?)[\'|\"]/";
 $sResponse = preg_replace($pregRule, '="/' . $protocal_host['scheme'] . '://' . $protocal_host['host'] . '/${1}${2}"', $sResponse);
@@ -140,10 +145,5 @@ $pregRule = "/[\'|\"](?:http)(.*?)[\'|\"]/";
 $sResponse = preg_replace($pregRule, '"/http${1}${3}"', $sResponse);
 $pregRule = "/=[\'|\"](?:\/\/)(.*?)[\'|\"]/";
 $sResponse = preg_replace($pregRule, '="/'.$http.'${1}${3}"', $sResponse);
-//以下两行代码可添加base
-#$pregRule = "/<head>/";
-#$sResponse = preg_replace($pregRule, '<head><base href="' . $https . $host . '/' . $protocal_host['scheme'] . '://' . $protocal_host['host'] . '/">', $sResponse);
 curl_close($aAccess);
-//解决中文乱码去掉下行注释符号#
-#header("Content-Type:text/html;charset=gb2312");
 echo $sResponse;
