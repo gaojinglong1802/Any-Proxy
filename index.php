@@ -3,7 +3,7 @@ $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
 $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == "https")) ? "https://" : "http://";
 //$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP，仅在部分网站中有效
-$anyip = 2;
+$anyip = 1;
 if (substr($path, -2) == "*q") {
     del_cookie();
     echo "<script>alert('Cookie已清除，即将返回首页！');window.location.href='" . $https . $host . "';</script>";
@@ -38,7 +38,7 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     header("Location: " . $PageUrls);
     exit;
 } elseif (!$_COOKIE['urlss']) {
-    exit('<html><head><meta charset="utf-8"><meta name="viewport" content="width=520, user-scalable=no, target-densitydpi=device-dpi"><title>代理访问_Any-Proxy</title><link rel="stylesheet" type="text/css" href="//s0.pstatp.com/cdn/expire-1-M/bootswatch/3.4.0/paper/bootstrap.min.css"><style type="text/css">.row{margin-top:100px}.page-header{margin-bottom:90px}.expand-transition{margin-top:150px;-webkit-transition:all.5s ease;transition:all.5s ease}</style></head><body><div id="app" class="container"><div class="row row-xs"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"><div class="page-header"><h3 class="text-center h3-xs">Any-Proxy</h3></div><form method="post"><div class="form-group " id="input-wrap"><label class="control-label" for="inputContent">请输入需访问的链接：</label><input type="text" id="inputContent" class="form-control" name="urlss" placeholder="http://"></div><div class="text-right"><input type="submit" class="input_group_addon btn btn-primary" value="GO"></div></div></form></div></div><div align="center" class="expand-transition"><p>在当前链接末尾输入 *q 可以退出当前页面回到首页</p><p>在域名后面加上链接地址即可访问，如 https://' . $host . '/http://ip38.com/ </p></div></div><footer class="footer navbar-fixed-bottom" style="text-align:center"><div class="container"><p>请勿访问您当地法律所禁止的网页，否则后果自负。</p><p>©Powered by <a href="https://github.com/yitd/Any-Proxy">Any-Proxy</a></p></div></footer></body></html>');
+    exit('<html><head><meta charset="utf-8"><meta name="viewport" content="width=520, user-scalable=no, target-densitydpi=device-dpi"><title>代理访问_Any-Proxy</title><link rel="stylesheet" type="text/css" href="//s0.pstatp.com/cdn/expire-1-M/bootswatch/3.4.0/paper/bootstrap.min.css"><style type="text/css">.row{margin-top:100px}.page-header{margin-bottom:90px}.expand-transition{margin-top:150px;-webkit-transition:all.5s ease;transition:all.5s ease}</style></head><body><div id="app" class="container"><div class="row row-xs"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"><div class="page-header"><h3 class="text-center h3-xs">Any-Proxy</h3></div><form method="post"><div class="form-group " id="input-wrap"><label class="control-label" for="inputContent">请输入需访问的链接：</label><input type="text" id="inputContent" class="form-control" name="urlss" placeholder="http://"></div><div class="text-right"><input type="submit" class="input_group_addon btn btn-primary" value="GO"></div></div></form></div></div><div align="center" class="expand-transition"><p>在当前链接末尾输入 *q 可以退出当前页面回到首页</p><p>在域名后面加上链接地址即可访问，如 ' . $https . $host . '/http://ip38.com/ </p></div></div><footer class="footer navbar-fixed-bottom" style="text-align:center"><div class="container"><p>请勿访问您当地法律所禁止的网页，否则后果自负。</p><p>©Powered by <a href="https://github.com/yitd/Any-Proxy">Any-Proxy</a></p></div></footer></body></html>');
 }
 //代理的域名及使用的协议最后不用加/
 $target_host = $_COOKIE['urlss'];
@@ -128,10 +128,11 @@ foreach ($headarr as $h) {
         if (strpos($h, 'Transfer-Encoding') !== false) continue;
         if (strpos($h, 'Connection') !== false) continue;
         if (strpos($h, 'HTTP/1.1 100 Continue') !== false) continue;
+        if (strpos($h, 'Cache-Control') !== false) continue;
         if (strpos($h, 'Set-Cookie') !== false) {
             $targetcookie = $h . ";";
             //如果返回到客户端cookie不正常可把下行中的$host换成$root . $top
-            $res_cookie = preg_replace("/domain=.*?;/", "domain=" . $host .";", $targetcookie);
+            $res_cookie = preg_replace("/domain=.*?;/", "", $targetcookie);
             $h = substr($res_cookie, 0, strlen($res_cookie) - 1);
             header($h, false);
         } else {
@@ -169,10 +170,12 @@ function parse_header($sResponse) {
         }
     return $ret;
 }
+//解决中文乱码
+if (stristr($sResponse, "GBK") || stristr($sResponse, "GB2312")) {
+    $sResponse = mb_convert_encoding($sResponse, "UTF-8", "GBK,GB2312,BIG5");
+}
 // close cURL resource, and free up system resources
 $sResponse = str_replace("http://" . $protocal_host['host'], $https . $host, $sResponse);
 $sResponse = str_replace("https://" . $protocal_host['host'], $https . $host, $sResponse);
 curl_close($aAccess);
-//解决中文乱码去掉下行注释符号#
-#header("Content-Type:text/html;charset=gb2312");
 echo $sResponse;
