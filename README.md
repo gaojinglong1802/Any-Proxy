@@ -25,8 +25,8 @@
 > 测试站点：https://turl.chat/ 请求量超过50次将会无法访问  
   
   
-![Image](https://p.pstatp.com/origin/1382700019aa3271d8dbf)  
-![Image](https://p.pstatp.com/origin/1381300028eead6fe7615)  
+![Image](https://p.pstatp.com/origin/fe81000376fc445be379)  
+![Image](https://p.pstatp.com/origin/137b90001905c99862df3)  
 
 > 基于：https://github.com/koala0529/reverse-proxy-php 修改  
 > 请勿用于非法用途，否则后果自负。
