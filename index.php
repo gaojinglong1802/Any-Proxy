@@ -116,7 +116,7 @@ $sResponse = curl_exec($aAccess);
 //判断请求url是否被重定向
 $locurl = parse_url(curl_getinfo($aAccess, CURLINFO_EFFECTIVE_URL));
 if ($locurl['scheme'] . "://" . $locurl['host'] != $protocal_host['scheme'] . "://" . $protocal_host['host']) {
-    setcookie("urlss", $locurls, 0, "/");
+    setcookie("urlss", $locurl['scheme'] . "://" . $locurl['host'], 0, "/");
 }
 list($headerstr, $sResponse) = parse_header($sResponse);
 $headarr = explode("\r\n", $headerstr);
