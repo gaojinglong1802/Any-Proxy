@@ -108,6 +108,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 curl_setopt($aAccess, CURLOPT_HTTPHEADER, $headers);
 // grab URL and pass it to the browser
 $sResponse = curl_exec($aAccess);
+//判断请求url是否被重定向
+$locurl = parse_url(curl_getinfo($aAccess, CURLINFO_EFFECTIVE_URL));
+if ($locurl['scheme'] . "://" . $locurl['host'] != $protocal_host['scheme'] . "://" . $protocal_host['host']) {
+    header("Location: " . $https . $host . "/" . curl_getinfo($aAccess, CURLINFO_EFFECTIVE_URL));
+    exit;
+}
 list($headerstr, $sResponse) = parse_header($sResponse);
 $headarr = explode("\r\n", $headerstr);
 foreach ($headarr as $h) {
