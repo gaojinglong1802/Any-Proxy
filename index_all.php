@@ -27,7 +27,6 @@ if ($url) {
     $PageUrl['query'] ? $query = "?" . $PageUrl['query'] : $query = "";
     $http = $PageUrl['scheme'] . "://";
     $PageUrls = $https . $host . $PageUrl['path'] . $query;
-    del_cookie();
 } elseif (!substr($path, 1)) {
     exit('<html><head><meta charset="utf-8"><meta name="viewport" content="width=520, user-scalable=no, target-densitydpi=device-dpi"><title>代理访问_Any-Proxy</title><link rel="stylesheet" type="text/css" href="//s0.pstatp.com/cdn/expire-1-M/bootswatch/3.4.0/paper/bootstrap.min.css"><style type="text/css">.row{margin-top:100px}.page-header{margin-bottom:90px}.expand-transition{margin-top:150px;-webkit-transition:all.5s ease;transition:all.5s ease}</style></head><body><div id="app" class="container"><div class="row row-xs"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"><div class="page-header"><h3 class="text-center h3-xs">Any-Proxy</h3></div><form method="post"><div class="form-group " id="input-wrap"><label class="control-label" for="inputContent">请输入需访问的链接：</label><input type="text" id="inputContent" class="form-control" name="urlss" placeholder="http://" required="required"></div><div class="text-right"><input type="submit" class="input_group_addon btn btn-primary" value="GO"></div></div></form></div></div><div align="center" class="expand-transition"><p>在当前链接末尾输入 ~q 可以退出当前页面回到首页</p><p>在域名后面加上链接地址即可访问，如 ' . $https . $host . '/http://ip38.com/ </p></div></div><footer class="footer navbar-fixed-bottom" style="text-align:center"><div class="container"><p>请勿访问您当地法律所禁止的网页，否则后果自负。</p><p>©Powered by <a href="https://github.com/yitd/Any-Proxy">Any-Proxy</a></p></div></footer></body></html>');
 }
@@ -45,19 +44,16 @@ $top = "." . $rootdomain[$lenth - 1];
 $root = "." . $rootdomain[$lenth - 2];
 //判断请求的域名或ip是否合法
 if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
-    del_cookie();
     echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
     exit;
 }
 $PageIP = gethostbyname($protocal_host['host']);
 if (filter_var($PageIP, FILTER_VALIDATE_IP)) {
     if (filter_var($PageIP, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
-        del_cookie();
         echo "<script>alert('请求的ip被禁止！');window.location.href='" . $https . $host . "';</script>";
         exit;
     }
 } else {
-    del_cookie();
     echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
     exit;
 }
