@@ -1,6 +1,7 @@
 <?php
 $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
+$url = $_POST['urlss'];
 $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == "https")) ? "https://" : "http://";
 //$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP，仅在部分网站中有效
 $anyip = 1;
@@ -9,10 +10,14 @@ if (substr($path, -2) == "~q") {
     header("Location: " . $https . $host);
     exit;
 }
-if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_POST['urlss']) {
-    if ($_POST['urlss']) {
-        $url = $_POST['urlss'];
-    } else {
+if ($url) {
+    if (substr($url, 0, 4) != "http") {
+        $url = "http://" . $url;
+    }
+    header("Location: " . $https . $host . "/" . $url);
+    exit;
+} elseif (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://") {
+    if (!$url) {
         $url = substr($path, 1);
     }
     if (substr($url, 0, 4) != "http") {
@@ -23,39 +28,21 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     $http = $PageUrl['scheme'] . "://";
     $PageUrls = $https . $host . $PageUrl['path'] . $query;
     del_cookie();
-    //判断请求的域名或ip是否合法
-    if (strstr($url, ".") === false || $PageUrl['host'] == $host) {
-        echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
-        exit;
-    }
-    $PageIP = gethostbyname($PageUrl['host']);
-    if (filter_var($PageIP, FILTER_VALIDATE_IP)) {
-        if (filter_var($PageIP, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
-            echo "<script>alert('请求的ip被禁止！');window.location.href='" . $https . $host . "';</script>";
-            exit;
-        }
-    }
-    setcookie("urlss", $http . $PageUrl['host'], time() + 86400 * 365, "/");
-    header("Location: " . $PageUrls);
-    exit;
-} elseif (!$_COOKIE['urlss']) {
+} elseif (!substr($path, 1)) {
     exit('<html><head><meta charset="utf-8"><meta name="viewport" content="width=520, user-scalable=no, target-densitydpi=device-dpi"><title>代理访问_Any-Proxy</title><link rel="stylesheet" type="text/css" href="//s0.pstatp.com/cdn/expire-1-M/bootswatch/3.4.0/paper/bootstrap.min.css"><style type="text/css">.row{margin-top:100px}.page-header{margin-bottom:90px}.expand-transition{margin-top:150px;-webkit-transition:all.5s ease;transition:all.5s ease}</style></head><body><div id="app" class="container"><div class="row row-xs"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"><div class="page-header"><h3 class="text-center h3-xs">Any-Proxy</h3></div><form method="post"><div class="form-group " id="input-wrap"><label class="control-label" for="inputContent">请输入需访问的链接：</label><input type="text" id="inputContent" class="form-control" name="urlss" placeholder="http://" required="required"></div><div class="text-right"><input type="submit" class="input_group_addon btn btn-primary" value="GO"></div></div></form></div></div><div align="center" class="expand-transition"><p>在当前链接末尾输入 ~q 可以退出当前页面回到首页</p><p>在域名后面加上链接地址即可访问，如 ' . $https . $host . '/http://ip38.com/ </p></div></div><footer class="footer navbar-fixed-bottom" style="text-align:center"><div class="container"><p>请勿访问您当地法律所禁止的网页，否则后果自负。</p><p>©Powered by <a href="https://github.com/yitd/Any-Proxy">Any-Proxy</a></p></div></footer></body></html>');
 }
 //代理的域名及使用的协议最后不用加/
-$target_host = $_COOKIE['urlss'];
-if (substr($target_host, 0, 4) != "http") {
-    $target_host = "http://" . $target_host;
-}
+$target_host = $http . $PageUrl['host'];
 //处理代理的主机得到协议和主机名称
 $protocal_host = parse_url($target_host);
 //以.分割域名字符串
-$rootdomain = explode(".",$host);
+$rootdomain = explode(".", $host);
 //获取数组的长度
 $lenth = count($rootdomain);
 //获取顶级域名
-$top = ".".$rootdomain[$lenth-1];
+$top = "." . $rootdomain[$lenth - 1];
 //获取主域名
-$root = ".".$rootdomain[$lenth-2];
+$root = "." . $rootdomain[$lenth - 2];
 //判断请求的域名或ip是否合法
 if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
     del_cookie();
@@ -69,10 +56,14 @@ if (filter_var($PageIP, FILTER_VALIDATE_IP)) {
         echo "<script>alert('请求的ip被禁止！');window.location.href='" . $https . $host . "';</script>";
         exit;
     }
+} else {
+    del_cookie();
+    echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
+    exit;
 }
 // set URL and other appropriate options
 $aAccess = curl_init();
-curl_setopt($aAccess, CURLOPT_URL, $protocal_host['scheme'] . "://" . $protocal_host['host'] . $path);
+curl_setopt($aAccess, CURLOPT_URL, $target_host . $PageUrl['path'] . $query);
 curl_setopt($aAccess, CURLOPT_HEADER, true);
 curl_setopt($aAccess, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, true);
@@ -80,7 +71,6 @@ curl_setopt($aAccess, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($aAccess, CURLOPT_SSL_VERIFYHOST, false);
 curl_setopt($aAccess, CURLOPT_TIMEOUT, 10);
 curl_setopt($aAccess, CURLOPT_BINARYTRANSFER, true);
-#curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, 1);
 //关系数组转换成字符串，每个键值对中间用=连接，以; 分割
 function array_to_str($array) {
     $string = "";
@@ -100,7 +90,7 @@ if ($_SERVER['HTTP_REFERER']) {
 if ($anyip == "1") {
     $remoteip = $_SERVER['HTTP_CLIENT_IP'];
 } elseif ($anyip == "2") {
-    $remoteip = mt_rand(1,255).".".mt_rand(1,255).".".mt_rand(1,255).".".mt_rand(1,255);
+    $remoteip = mt_rand(1, 255) . "." . mt_rand(1, 255) . "." . mt_rand(1, 255) . "." . mt_rand(1, 255);
 } elseif (empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $remoteip = $_SERVER['REMOTE_ADDR'];
 } else {
@@ -120,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     curl_setopt($aAccess, CURLOPT_POSTFIELDS, http_build_query($_POST));
 }
 curl_setopt($aAccess, CURLOPT_HTTPHEADER, $headers);
-$url = curl_getinfo($aAccess, CURLINFO_EFFECTIVE_URL);
 // grab URL and pass it to the browser
 $sResponse = curl_exec($aAccess);
 list($headerstr, $sResponse) = parse_header($sResponse);
@@ -137,7 +126,7 @@ foreach ($headarr as $h) {
         if (strpos($h, 'Set-Cookie') !== false) {
             $targetcookie = $h . ";";
             //如果返回到客户端cookie不正常可把下行中的$root . $top换成$host
-            $res_cookie = preg_replace("/domain=.*?;/", "domain=" . $root . $top .";", $targetcookie);
+            $res_cookie = preg_replace("/domain=.*?;/", "domain=" . $root . $top . ";", $targetcookie);
             $h = substr($res_cookie, 0, strlen($res_cookie) - 1);
             header($h, false);
         } else {
@@ -169,10 +158,13 @@ function header_callback($str) {
 }
 function parse_header($sResponse) {
     list($headerstr, $sResponse) = explode("\r\n\r\n", $sResponse, 2);
-    $ret = array($headerstr, $sResponse);
-        if (preg_match('/^HTTP\/1\.1 \d{3}/', $sResponse)) {
-            $ret = parse_header($sResponse);
-        }
+    $ret = array(
+        $headerstr,
+        $sResponse
+    );
+    if (preg_match('/^HTTP\/1\.1 \d{3}/', $sResponse)) {
+        $ret = parse_header($sResponse);
+    }
     return $ret;
 }
 //解决中文乱码
@@ -182,7 +174,14 @@ if (stristr(substr($sResponse, $charlen, 18) , "GBK") || stristr(substr($sRespon
 }
 header("Pragma: no-cache");
 // close cURL resource, and free up system resources
-$sResponse = str_replace("http://" . $protocal_host['host'], $https . $host, $sResponse);
-$sResponse = str_replace("https://" . $protocal_host['host'], $https . $host, $sResponse);
+$pregRule = "/=[\'|\"](?!\/\/)(?:\/)(.*?)[\'|\"]/s";
+$sResponse = preg_replace($pregRule, '="/' . $protocal_host['scheme'] . '://' . $protocal_host['host'] . '/${1}${2}"', $sResponse);
+$pregRule = "/=[\'|\"](?:http)(.*?)[\'|\"]/";
+$sResponse = preg_replace($pregRule, '="/http${1}${3}"', $sResponse);
+$pregRule = "/=[\'|\"](?:\/\/)(.*?)[\'|\"]/";
+$sResponse = preg_replace($pregRule, '="/' . $http . '${1}${3}"', $sResponse);
+//以下两行代码可添加base
+$pregRule = "/<head>/";
+$sResponse = preg_replace($pregRule, '<head><base href="' . $https . $host . '/' . $protocal_host['scheme'] . '://' . $protocal_host['host'] . '/">', $sResponse);
 curl_close($aAccess);
 echo $sResponse;
