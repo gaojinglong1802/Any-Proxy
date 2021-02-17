@@ -3,7 +3,7 @@ $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
 $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == "https")) ? "https://" : "http://";
 //$anyip值为1发送服务器IP头，值为2则发送随机IP，值为3发送客户端IP，仅在部分网站中有效
-$anyip = 2;
+$anyip = 1;
 if (substr($path, -2) == "~q") {
     del_cookie();
     header("Location: " . $https . $host);
@@ -23,9 +23,10 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     $http = $PageUrl['scheme'] . "://";
     $PageUrls = $https . $host . $PageUrl['path'] . $query;
     del_cookie();
-    //判断请求url或ip是否合法
-    if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP)) {
-        if (filter_var($PageUrl['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+    //判断请求的ip是否合法
+    $PageIP = gethostbyname($PageUrl['host']);
+    if (filter_var($PageIP, FILTER_VALIDATE_IP)) {
+        if (filter_var($PageIP, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
             echo "<script>alert('请求的ip被禁止！');window.location.href='" . $https . $host . "';</script>";
             exit;
         }
@@ -55,18 +56,19 @@ $lenth = count($rootdomain);
 $top = ".".$rootdomain[$lenth-1];
 //获取主域名
 $root = ".".$rootdomain[$lenth-2];
-//判断请求url或ip是否合法
-if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
-    del_cookie();
-    echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
-    exit;
-}
-if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP)) {
-    if (filter_var($protocal_host['host'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+//判断请求的ip是否合法
+$PageIP = gethostbyname($protocal_host['host']);
+if (filter_var($PageIP, FILTER_VALIDATE_IP)) {
+    if (filter_var($PageIP, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
         del_cookie();
         echo "<script>alert('请求的ip被禁止！');window.location.href='" . $https . $host . "';</script>";
         exit;
     }
+}
+if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
+    del_cookie();
+    echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
+    exit;
 }
 // set URL and other appropriate options
 $aAccess = curl_init();
@@ -78,6 +80,7 @@ curl_setopt($aAccess, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($aAccess, CURLOPT_SSL_VERIFYHOST, false);
 curl_setopt($aAccess, CURLOPT_TIMEOUT, 10);
 curl_setopt($aAccess, CURLOPT_BINARYTRANSFER, true);
+#curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, 1);
 //关系数组转换成字符串，每个键值对中间用=连接，以; 分割
 function array_to_str($array) {
     $string = "";
@@ -117,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     curl_setopt($aAccess, CURLOPT_POSTFIELDS, http_build_query($_POST));
 }
 curl_setopt($aAccess, CURLOPT_HTTPHEADER, $headers);
+$url = curl_getinfo($aAccess, CURLINFO_EFFECTIVE_URL);
 // grab URL and pass it to the browser
 $sResponse = curl_exec($aAccess);
 list($headerstr, $sResponse) = parse_header($sResponse);
