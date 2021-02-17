@@ -23,18 +23,6 @@ if (substr($path, 1, 7) == "http://" || substr($path, 1, 8) == "https://" || $_P
     $http = $PageUrl['scheme'] . "://";
     $PageUrls = $https . $host . $PageUrl['path'] . $query;
     del_cookie();
-    //判断请求的ip是否合法
-    $PageIP = gethostbyname($PageUrl['host']);
-    if (filter_var($PageIP, FILTER_VALIDATE_IP)) {
-        if (filter_var($PageIP, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
-            echo "<script>alert('请求的ip被禁止！');window.location.href='" . $https . $host . "';</script>";
-            exit;
-        }
-    }
-    if (strstr($url, ".") === false || $PageUrl['host'] == $host) {
-        echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
-        exit;
-    }
     setcookie("urlss", $http . $PageUrl['host'], time() + 86400 * 365, "/");
     header("Location: " . $PageUrls);
     exit;
@@ -56,7 +44,12 @@ $lenth = count($rootdomain);
 $top = ".".$rootdomain[$lenth-1];
 //获取主域名
 $root = ".".$rootdomain[$lenth-2];
-//判断请求的ip是否合法
+//判断请求的域名或ip是否合法
+if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
+    del_cookie();
+    echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
+    exit;
+}
 $PageIP = gethostbyname($protocal_host['host']);
 if (filter_var($PageIP, FILTER_VALIDATE_IP)) {
     if (filter_var($PageIP, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
@@ -64,8 +57,7 @@ if (filter_var($PageIP, FILTER_VALIDATE_IP)) {
         echo "<script>alert('请求的ip被禁止！');window.location.href='" . $https . $host . "';</script>";
         exit;
     }
-}
-if (strstr($target_host, ".") === false || $protocal_host['host'] == $host) {
+} else {
     del_cookie();
     echo "<script>alert('请求的域名有误！');window.location.href='" . $https . $host . "';</script>";
     exit;
