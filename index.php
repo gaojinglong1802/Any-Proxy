@@ -67,12 +67,11 @@ $aAccess = curl_init();
 curl_setopt($aAccess, CURLOPT_URL, $protocal_host['scheme'] . "://" . $protocal_host['host'] . $path);
 curl_setopt($aAccess, CURLOPT_HEADER, true);
 curl_setopt($aAccess, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, 1);
 curl_setopt($aAccess, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($aAccess, CURLOPT_SSL_VERIFYHOST, false);
 curl_setopt($aAccess, CURLOPT_TIMEOUT, 10);
 curl_setopt($aAccess, CURLOPT_BINARYTRANSFER, true);
-#curl_setopt($aAccess, CURLOPT_FOLLOWLOCATION, 1);
 //关系数组转换成字符串，每个键值对中间用=连接，以; 分割
 function array_to_str($array) {
     $string = "";
@@ -112,9 +111,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     curl_setopt($aAccess, CURLOPT_POSTFIELDS, http_build_query($_POST));
 }
 curl_setopt($aAccess, CURLOPT_HTTPHEADER, $headers);
-$url = curl_getinfo($aAccess, CURLINFO_EFFECTIVE_URL);
 // grab URL and pass it to the browser
 $sResponse = curl_exec($aAccess);
+//判断请求url是否被重定向
+$locurl = parse_url(curl_getinfo($aAccess, CURLINFO_EFFECTIVE_URL));
+if ($locurl['scheme'] . "://" . $locurl['host'] != $protocal_host['scheme'] . "://" . $protocal_host['host']) {
+    setcookie("urlss", $locurls, 0, "/");
+}
 list($headerstr, $sResponse) = parse_header($sResponse);
 $headarr = explode("\r\n", $headerstr);
 foreach ($headarr as $h) {
