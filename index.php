@@ -1,30 +1,4 @@
 <?php
-if ($_SERVER['HTTP_HOST'] == "turl.chat") {
-    if (empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip = $_SERVER['REMOTE_ADDR'];
-    } else {
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    }
-    if (class_exists('Redis')) {
-        $redis = new Redis();
-        $redis->connect('127.0.0.1', 6379);
-        $IPmax = 50;
-        $IPtime = 86400 * 5;
-        $redis = new redis();
-        $redis->connect('127.0.0.1', '6379');
-        $ipfromcf = $ip;
-        $num = $redis->get($ipfromcf);
-        if (!$num) {
-            $num = 1;
-        } else {
-            $num = $num + 1;
-        }
-        if ($num > $IPmax) {
-            exit("您已超出可允许的请求量，若需使用请自行搭建：<a href=https://github.com/yitd/Any-Proxy>https://github.com/yitd/Any-Proxy</a>");
-        }
-        $redis->setex($ipfromcf, $IPtime, $num);
-    }
-}
 $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
 $https = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == "https")) ? "https://" : "http://";
