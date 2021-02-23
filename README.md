@@ -22,9 +22,6 @@
   
 > 如 ：https://turl.chat/http://ip38.com/  
   
-> 测试站点：https://turl.chat/ 请求量超过50次将会无法访问  
-  
-  
 ![Image](https://p.pstatp.com/origin/fe81000376fc445be379)  
 ![Image](https://p.pstatp.com/origin/137b90001905c99862df3)  
 
