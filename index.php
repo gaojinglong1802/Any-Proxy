@@ -6,25 +6,7 @@ if (isset($_POST['Any-Proxy'])) {
 }
 if ($_COOKIE['Any-Proxy'] != $pass) {
 	header('HTTP/1.1 403');
-    exit('
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>form{ width: 90%;margin: 0 auto;text-align: center;}    
-    </style>
-</head>
-<body>
-    <meta charset="UTF-8">
-    <form method="post">
-        密码：
-        <input type="password" name="Any-Proxy" />
-        <input type="submit" value="访问" />
-    </form>
-</body>
-</html>
-    ');
+    exit('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport"content="width=device-width, initial-scale=1.0"><style>form{width:90%;margin:0 auto;text-align:center}</style></head><body><meta charset="UTF-8"><form method="post">密码：<input type="password"name="Any-Proxy"/><input type="submit"value="访问"/></form></body></html>');
 }
 $host = $_SERVER['HTTP_HOST'];
 $path = $_SERVER['REQUEST_URI'];
