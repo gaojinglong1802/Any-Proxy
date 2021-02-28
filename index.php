@@ -1,9 +1,10 @@
 <?php
-$pass = "web";//web为你的密码。自行修改
-if (isset($_POST['password'])) {
-    setcookie("password", $_POST['password'], time()+3600*24*366);
+$pass = "web";//web为默认密码，自行修噶
+if (isset($_POST['Any-Proxy'])) {
+    setcookie("Any-Proxy", $_POST['Any-Proxy'], time()+3600*24*366);
+    header("Refresh:0");
 }
-if ($_COOKIE['password'] != $pass) {
+if ($_COOKIE['Any-Proxy'] != $pass) {
 	header('HTTP/1.1 403');
     exit('
 <!DOCTYPE html>
@@ -18,7 +19,7 @@ if ($_COOKIE['password'] != $pass) {
     <meta charset="UTF-8">
     <form method="post">
         密码：
-        <input type="password" name="password" />
+        <input type="password" name="Any-Proxy" />
         <input type="submit" value="访问" />
     </form>
 </body>
