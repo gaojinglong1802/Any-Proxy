@@ -147,6 +147,7 @@ foreach ($headarr as $h) {
 }
 function del_cookie() {
     foreach ($_COOKIE as $key => $value) {
+        if ($key == "Any-Proxy") continue;
         setcookie($key, null, time() - 3600, "/");
     }
 }
