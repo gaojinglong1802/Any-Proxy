@@ -18,9 +18,9 @@
   
 > 在当前链接末尾输入 ~q 可以退出当前页面回到首页  
 > 在域名后面加上链接地址即可访问：  
-> https://turl.chat/http://+需访问的链接 （必须添加http(s)://）  
+> https://www.com/http://+需访问的链接 （目标链接必须添加http(s)://）  
   
-> 如 ：https://turl.chat/http://ip38.com/  
+> 如 ：https://www.com/http://ip38.com/  
   
 ![Image](https://p.pstatp.com/origin/fe81000376fc445be379)  
 ![Image](https://p.pstatp.com/origin/137b90001905c99862df3)  
